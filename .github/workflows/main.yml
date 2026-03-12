@@ -1,0 +1,35 @@
+name: FortiCNAPP Shift-Left
+on:
+  push:
+    branches: [ main ]
+jobs:
+  scan-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Image
+        run: docker build -t 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:${{ github.sha }} ./app
+
+      - name: FortiCNAPP Scan
+        uses: lacework/lw-scanner-action@v1
+        with:
+          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
+          IMAGE_NAME: 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app
+          IMAGE_TAG: ${{ github.sha }}
+          SAVE_RESULTS: true
+
+      - name: Push to ECR
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin 116933114817.dkr.ecr.ca-central-1.amazonaws.com
+          docker push 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:${{ github.sha }}
+
+      - name: Update GitOps Tag
+        run: |
+          sed -i "s|image: .*|image: 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:${{ github.sha }}|g" gitops/deployment.yaml
+          git config user.name "robot" && git config user.email "robot@github.com"
+          git commit -am "update image tag [skip ci]" && git push
