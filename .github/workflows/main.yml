@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Image
-        run: docker build -t 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:${{ github.sha }} ./app
+        run: docker build -t 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:${{ github.sha }} -f ./app/Dockerfile-prod ./app
 
       - name: FortiCNAPP Scan
         uses: lacework/lw-scanner-action@v1.4.5
