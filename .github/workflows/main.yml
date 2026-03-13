@@ -21,7 +21,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           SAVE_RESULTS_IN_LACEWORK: true
           RESULTS_IN_GITHUB_SUMMARY: true
-          SAVE_RESULTS: true
 
       - name: Push to ECR
         run: |
