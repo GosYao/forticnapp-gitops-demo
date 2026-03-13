@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: node-app
-        image: 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:6a6596658b37121b2b5c4a3b3aff9c07e70f5273
+        image: 116933114817.dkr.ecr.ca-central-1.amazonaws.com/forticnapp-demo-app:2491e3e533d916778e65bd39047bdd191001571b
         ports:
         - containerPort: 3000
 ---
