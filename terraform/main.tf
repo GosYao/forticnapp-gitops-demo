@@ -1,7 +1,7 @@
 # 1. ECR Repository for the Node.js App
 resource "aws_ecr_repository" "demo_app" {
   name                 = "forticnapp-demo-app"
-  image_tag_mutability = "MUTABLE"
+  image_tag_mutability = "IMMUTABLE"
   force_delete         = true # Ensures clean teardowns during terraform destroy
 }
 
